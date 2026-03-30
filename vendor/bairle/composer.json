@@ -1,0 +1,54 @@
+{
+    "name": "bairle/contao-bairle-stellenangebote-bundle",
+    "description": "Bairle Stellenangebote",
+    "keywords": [
+        "contao",
+        "bundle",
+        "tag 3",
+        "tag 4"
+    ],
+    "type": "contao-bundle",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Mathis Jakober",
+            "email": "jakober@bairle.de",
+            "homepage": "https://bairle.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/bairle/contao-bairle-stellenangebote-bundle/issues",
+        "source": "https://github.com/bairle/contao-bairle-stellenangebote-bundle"
+    },
+    "require": {
+        "php": "^8.1",
+        "contao/core-bundle": "^5.3"
+    },
+    "require-dev": {
+        "contao/easy-coding-standard": "^6.13",
+        "contao/manager-plugin": "^2.12",
+        "contao/test-case": "^5.3",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bairle\\ContaoBairleStellenangeboteBundle\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": false,
+            "contao/manager-plugin": false,
+            "contao-community-alliance/composer-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Bairle\\ContaoBairleStellenangeboteBundle\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
+    },
+    "version": "1.0"
+}
