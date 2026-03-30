@@ -1,0 +1,33 @@
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?>>
+    <article class="job-detail">
+        <h1><?php echo $this->job['title']; ?></h1>
+
+        <?php if ($this->imagePath): ?>
+            <div class="image">
+                <img src="<?php echo $this->imagePath; ?>" alt="<?php echo $this->job['title']; ?>">
+            </div>
+        <?php endif; ?>
+
+        <div class="section description">
+            <h2>Stellenbeschreibung</h2>
+            <?php echo $this->job['description']; ?>
+        </div>
+
+        <div class="section requirements">
+            <h2>Das bringst du mit</h2>
+            <?php echo $this->job['requirements']; ?>
+        </div>
+
+        <div class="section benefits">
+            <h2>Das bieten wir dir</h2>
+            <?php echo $this->job['benefits']; ?>
+        </div>
+
+        <?php if ($this->jobForm): ?>
+            <div class="job-form-container">
+                <h2>Jetzt online bewerben</h2>
+                <?php echo $this->jobForm; ?>
+            </div>
+        <?php endif; ?>
+    </article>
+</div>

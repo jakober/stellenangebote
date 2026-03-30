@@ -15,13 +15,6 @@ declare(strict_types=1);
 use Bairle\ContaoBairleStellenangeboteBundle\Controller\FrontendModule\KarriereListingController;
 
 /**
- * Backend modules
- */
-$GLOBALS['TL_LANG']['MOD']['stellenangebote_management'] = 'Karriere';
-$GLOBALS['TL_LANG']['MOD']['karriere_collection'] = ['Stellenangebote', 'Stellenangebote verwalten'];
-
-/**
  * Frontend modules
  */
-$GLOBALS['TL_LANG']['FMD']['stellenangebote_list'] = 'Stellenangebot Liste';
-$GLOBALS['TL_LANG']['FMD'][KarriereListingController::TYPE] = ['Karriere', 'Stellenangebote'];
+$GLOBALS['TL_DCA']['tl_module']['palettes'][KarriereListingController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';

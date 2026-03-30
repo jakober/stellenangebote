@@ -2,129 +2,111 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of Stellenangebote.
- *
- * (c) Mathis Jakober <jakober@bairle.de>
- * @license GPL-3.0-or-later
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/bairle/contao-bairle-stellenangebote-bundle
- */
-
 use Contao\DataContainer;
 use Contao\DC_Table;
 
-/**
- * Table tl_stellenangebote
- */
 $GLOBALS['TL_DCA']['tl_stellenangebote'] = array(
-    'config'      => array(
+    'config' => array(
         'dataContainer'    => DC_Table::class,
         'enableVersioning' => true,
         'sql'              => array(
             'keys' => array(
-                'id' => 'primary'
+                'id'    => 'primary',
+                'alias' => 'index'
             )
         ),
     ),
-    'list'        => array(
-        'sorting'           => array(
+    'list' => array(
+        'sorting' => array(
             'mode'        => DataContainer::MODE_SORTABLE,
             'fields'      => array('title'),
             'flag'        => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter;sort,search,limit'
         ),
-        'label'             => array(
+        'label' => array(
             'fields' => array('title'),
             'format' => '%s',
         ),
-        'global_operations' => array(
-            'all' => array(
-                'href'       => 'act=select',
-                'class'      => 'header_edit_all',
-                'attributes' => 'data-action="contao--scroll-offset#store"',
-            )
-        ),
-        'operations'        => array(
-           'all',
+        'operations' => array(
+            'edit'   => array('href' => 'act=edit', 'icon' => 'edit.svg'),
+            'copy'   => array('href' => 'act=copy', 'icon' => 'copy.svg'),
+            'delete' => array('href' => 'act=delete', 'icon' => 'delete.svg', 'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;getBackendScrollOffset()"'),
+            'show'   => array('href' => 'act=show', 'icon' => 'show.svg'),
         )
     ),
-    'palettes'    => array(
-        '__selector__' => array('addSubpalette'),
-        'default'      => '{first_legend},title,selectField,checkboxField,multitextField;{second_legend},addSubpalette'
+    'palettes' => array(
+        'default' => '{title_legend},title,alias;{media_legend},singleSRC;{details_legend},employment_type,description,requirements,benefits;{form_legend},form_id'
     ),
-    'subpalettes' => array(
-        'addSubpalette' => 'textareaField',
-    ),
-    'fields'      => array(
-        'id'             => array(
-            'sql' => "int(10) unsigned NOT NULL auto_increment"
-        ),
-        'tstamp'         => array(
-            'sql' => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'title'          => array(
+    'fields' => array(
+        'id'     => array('sql' => "int(10) unsigned NOT NULL auto_increment"),
+        'tstamp' => array('sql' => "int(10) unsigned NOT NULL default '0'"),
+        'title'  => array(
             'inputType' => 'text',
             'exclude'   => true,
             'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
-            'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
             'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'selectField'    => array(
-            'inputType' => 'select',
-            'exclude'   => true,
-            'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
-            'reference' => &$GLOBALS['TL_LANG']['tl_stellenangebote'],
-            'options'   => array('firstoption', 'secondoption'),
-            //'foreignKey'            => 'tl_user.name',
-            //'options_callback'      => array('CLASS', 'METHOD'),
-            'eval'      => array('includeBlankOption' => true, 'tl_class' => 'w50'),
-            'sql'       => "varchar(255) NOT NULL default ''",
-            //'relation'  => array('type' => 'hasOne', 'load' => 'lazy')
-        ),
-        'checkboxField'  => array(
-            'inputType' => 'select',
-            'exclude'   => true,
-            'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
-            'reference' => &$GLOBALS['TL_LANG']['tl_stellenangebote'],
-            'options'   => array('firstoption', 'secondoption'),
-            //'foreignKey'            => 'tl_user.name',
-            //'options_callback'      => array('CLASS', 'METHOD'),
-            'eval'      => array('includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'),
-            'sql'       => "varchar(255) NOT NULL default ''",
-            //'relation'  => array('type' => 'hasOne', 'load' => 'lazy')
-        ),
-        'multitextField' => array(
+        'alias' => array(
             'inputType' => 'text',
             'exclude'   => true,
             'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
-            'eval'      => array('multiple' => true, 'size' => 4, 'decodeEntities' => true, 'tl_class' => 'w50'),
-            'sql'       => "varchar(255) NOT NULL default ''"
+            'eval'      => array('rgxp' => 'alias', 'doNotCopy' => true, 'unique' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+            'save_callback' => array(array('tl_stellenangebote', 'generateAlias')), // Methode muss in der Klasse unten definiert sein
+            'sql'       => "varchar(255) BINARY NOT NULL default ''"
         ),
-        'addSubpalette'  => array(
-            'exclude'   => true,
-            'inputType' => 'checkbox',
-            'eval'      => array('submitOnChange' => true, 'tl_class' => 'w50 clr'),
-            'sql'       => array('type' => 'boolean', 'default' => false),
+        'singleSRC' => [
+            'inputType' => 'fileTree',
+            'eval' => ['filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'fieldType' => 'radio', 'tl_class' => 'clr'],
+            'sql' => "binary(16) NULL",
+        ],
+        'employment_type' => array(
+            'inputType' => 'select',
+            'options'   => array('Vollzeit', 'Teilzeit'),
+            'reference' => &$GLOBALS['TL_LANG']['tl_stellenangebote']['employment_options'],
+            'eval'      => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+            'sql'       => "varchar(32) NOT NULL default ''"
         ),
-        'textareaField'  => array(
+        'description' => array(
             'inputType' => 'textarea',
-            'exclude'   => true,
-            'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
             'eval'      => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
-            'sql'       => 'text NULL'
+            'sql'       => "text NULL"
+        ),
+        'requirements' => array(
+            'inputType' => 'textarea',
+            'eval'      => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+            'sql'       => "text NULL"
+        ),
+        'benefits' => array(
+            'inputType' => 'textarea',
+            'eval'      => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
+            'sql'       => "text NULL"
+        ),
+        'form_id' => array(
+            'inputType' => 'select',
+            'options_callback' => array('tl_stellenangebote', 'getForms'),
+            'eval'      => array('includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'),
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
         )
     )
 );
+
+// Callback-Klasse für Alias-Generierung und Formular-Liste
+class tl_stellenangebote extends \Contao\Backend {
+    public function generateAlias($varValue, \Contao\DataContainer $dc) {
+        if ($varValue == '') {
+            $varValue = \Contao\StringUtil::generateAlias($dc->activeRecord->title);
+        }
+        return $varValue;
+    }
+    public function getForms() {
+        $forms = array();
+        $objForms = \Contao\FormModel::findAll();
+        if ($objForms !== null) {
+            while ($objForms->next()) {
+                $forms[$objForms->id] = $objForms->title;
+            }
+        }
+        return $forms;
+    }
+}

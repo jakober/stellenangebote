@@ -1,0 +1,14 @@
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?> style="overflow: visible">
+    <div class="job-listing-container">
+        <?php foreach ($this->jobs as $job): ?>
+            <div class="job-item">
+                <div class="job-title">
+                    <?php echo $job['title']; ?>
+                </div>
+                <a href="<?php echo $job['link']; ?>" class="job-button" title="<?php echo $job['title']; ?>">
+                    Jetzt Bewerben
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>

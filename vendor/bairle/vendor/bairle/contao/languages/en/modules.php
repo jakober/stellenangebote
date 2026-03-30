@@ -17,8 +17,8 @@ use Bairle\ContaoBairleStellenangeboteBundle\Controller\FrontendModule\KarriereL
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['stellenangebote_management'] = 'Karriere';
-$GLOBALS['TL_LANG']['MOD']['karriere_collection'] = ['Stellenangebote', 'Stellenangebote verwalten'];
+$GLOBALS['TL_LANG']['MOD']['stellenangebote_management'] = 'Stellenangebote';
+$GLOBALS['TL_LANG']['MOD']['karriere_collection'] = ['Karriere', 'Stellenangebote verwalten'];
 
 /**
  * Frontend modules
